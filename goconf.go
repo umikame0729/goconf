@@ -67,6 +67,7 @@ func (c *Config[T]) versionCheck() (bool, error) {
 
 // bool - is version checked OK, if false, need rerun program
 func (c *Config[T]) Load() (bool, error) {
+	c.Content.Data = c.Data
 	if c.is_load {
 		return true, nil
 	} else if err := c.createIfNotExist(); err != nil {
