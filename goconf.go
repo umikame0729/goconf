@@ -8,33 +8,6 @@ import (
 	"time"
 )
 
-type ErrorIsUpdated struct {
-	Path    string
-	BakPath string
-}
-
-func (e *ErrorIsUpdated) Error() string {
-	return fmt.Sprintf("`%s` updated, backup at `%s`", e.Path, e.BakPath)
-}
-
-func IsUpdated(err error) bool {
-	_, ok := err.(*ErrorIsUpdated)
-	return ok
-}
-
-type ErrorIsNewCreated struct {
-	Err error
-}
-
-func (e *ErrorIsNewCreated) Error() string {
-	return e.Err.Error()
-}
-
-func IsNewCreated(err error) bool {
-	_, ok := err.(*ErrorIsNewCreated)
-	return ok
-}
-
 // Config definition
 type Config[T interface{}] struct {
 	is_load bool
@@ -50,7 +23,7 @@ type Config[T interface{}] struct {
 func (c *Config[T]) Save() error {
 	c.Content.Version = c.Version
 	c.Content.Data = c.Data
-	if data, err := json.Marshal(c.Content); err != nil {
+	if data, err := json.MarshalIndent(c.Content, "", "  "); err != nil {
 		return err
 	} else if err := os.WriteFile(c.Path, data, os.ModePerm); err != nil {
 		return err
