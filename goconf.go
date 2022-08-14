@@ -3,6 +3,7 @@ package goconf
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"os"
 	"time"
 )
@@ -58,10 +59,12 @@ func (c *Config[T]) Save() error {
 }
 
 func (c *Config[T]) IsExist() bool {
-	if _, err := os.Stat(c.Path); os.IsExist(err) {
-		return true
-	} else {
+	if _, err := os.Stat(c.Path); os.IsNotExist(err) {
 		return false
+	} else if err == fs.ErrNotExist {
+		return false
+	} else {
+		return true
 	}
 }
 
