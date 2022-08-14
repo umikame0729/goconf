@@ -71,7 +71,9 @@ func (c *Config[T]) createIfNotExist() error {
 	} else if err := c.Save(); err != nil {
 		return err
 	}
-	return &ErrorIsNewCreated{}
+	return &ErrorIsNewCreated{
+		Err: fmt.Errorf("`%s` is new file", c.Path),
+	}
 }
 
 func (c *Config[T]) bakName() string {
